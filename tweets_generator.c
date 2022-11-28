@@ -11,6 +11,24 @@
 
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain);
 
+void print_markov_chain(struct MarkovChain* markov_chain)
+{
+    printf("MarkovChain:\n");
+    LinkedList* list = markov_chain->database;
+    Node* cur = list->first;
+    for (int i = 0; i < list->size; i++)
+    {
+        printf("%d.\t%s : [ ", i, cur->data->data);
+        struct NextNodeCounter* arr = cur->data->counter_list;
+        for (int j = 0; j < cur->data->counter_list_size; j++)
+        {
+            printf("{%s : %d} ", arr[j].markov_node.data, arr[j].frequency);
+        }
+        printf("]\n");
+        cur = cur->next;
+    }
+}
+
 int main(int argc ,char* argv[]){
     if(argc != ARGC5 && argc != ARGC4) {
         fprintf(stderr, WRONG_INPUT) ;
@@ -27,14 +45,15 @@ int main(int argc ,char* argv[]){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
     }
+    char s_in[1000] = {0};
     char* input_path = argv[3] ;
     FILE* in = fopen ( input_path, "r") ;
     if (in == NULL) {
         fprintf(stderr,FILE_FAIL ) ;
         return EXIT_FAILURE ;
     }
-    fgets(text ,num_of_words_to_read ,in ) ;
-    printf("%s",text) ;
+    fgets(s_in ,1000,in ) ;
+    printf("%s",s_in) ;
 
     free(text) ;
     fclose(in) ;

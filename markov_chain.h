@@ -14,19 +14,25 @@
  * insert MarkovChain struct
  */
 
+
+
+typedef struct MarkovChain {
+    LinkedList *database;
+    char *data;
+} MarkovChain;
+
 typedef struct NextNodeCounter {
     char *node_markov;
     int frequency;
+    MarkovChain markov_node ;
 } NextNodeCounter;
 
 typedef struct MarkovNode {
     char *data;
     NextNodeCounter *counter_list;
+    int counter_list_size ;
 } MarkovNode;
 
-typedef struct MarkovChain {
-    char *database;
-} MarkovChain;
 /**
  * Get one random state from the given markov_chain's database.
  * @param markov_chain
