@@ -6,10 +6,8 @@
 #define WRONG_INPUT "Usage: int int filepath int"
 #define ARGC5 5
 #define ARGC4 4
-#define ALOC_FAIL “Allocation failure""
 #define FILE_FAIL "Error:The given file is invalid.\n"
 
-int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain);
 
 void print_markov_chain(struct MarkovChain* markov_chain)
 {
@@ -29,6 +27,8 @@ void print_markov_chain(struct MarkovChain* markov_chain)
     }
 }
 
+int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain);
+
 int main(int argc ,char* argv[]){
     if(argc != ARGC5 && argc != ARGC4) {
         fprintf(stderr, WRONG_INPUT) ;
@@ -37,6 +37,7 @@ int main(int argc ,char* argv[]){
     unsigned int seed = strtol(argv[1], NULL, 10);
     unsigned int tweets_num = strtol(argv[2], NULL, 10);
     unsigned int num_of_words_to_read = 1000 ;
+    int num_of_Chars_to_read = 1000 ;
     if(argc == 4) {
         num_of_words_to_read = strtol(argv[4], NULL, 10);;
     }
@@ -52,9 +53,9 @@ int main(int argc ,char* argv[]){
         fprintf(stderr,FILE_FAIL ) ;
         return EXIT_FAILURE ;
     }
-    fgets(s_in ,1000,in ) ;
-    printf("%s",s_in) ;
-
+    while(fgets(text ,num_of_Chars_to_read,in ) != NULL){
+        printf("%s",s_in) ;
+    }
     free(text) ;
     fclose(in) ;
 
