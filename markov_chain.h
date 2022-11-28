@@ -6,8 +6,7 @@
 #include <stdlib.h> // For exit(), malloc()
 #include <stdbool.h> // for bool
 
-#define ALLOCATION_ERROR_MASSAGE "Allocation failure: Failed to allocate"\
-            "new memory\n"
+#define ALLOCATION_ERROR_MASSAGE "Allocation failure: Failed to allocate new memory\n"
 
 
 
@@ -15,8 +14,19 @@
  * insert MarkovChain struct
  */
 
+typedef struct NextNodeCounter {
+    char *node_markov;
+    int frequency;
+} NextNodeCounter;
 
+typedef struct MarkovNode {
+    char *data;
+    NextNodeCounter *counter_list;
+} MarkovNode;
 
+typedef struct MarkovChain {
+    char *database;
+} MarkovChain;
 /**
  * Get one random state from the given markov_chain's database.
  * @param markov_chain
@@ -77,5 +87,7 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr);
  * returns NULL in case of memory allocation failure.
  */
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr);
+
+int get_random_number(int max_number);
 
 #endif /* _MARKOV_CHAIN_H_ */
