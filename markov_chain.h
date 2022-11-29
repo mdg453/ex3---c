@@ -1,6 +1,6 @@
 #ifndef _MARKOV_CHAIN_H_
 #define _MARKOV_CHAIN_H_
-
+#define BAD_CHAIN "there is a problem with your chain"
 #include "linked_list.h"
 #include <stdio.h>  // For printf(), sscanf()
 #include <stdlib.h> // For exit(), malloc()
@@ -14,22 +14,21 @@
  * insert MarkovChain struct
  */
 
-
+struct MarkovNode;
 
 typedef struct MarkovChain {
-    LinkedList *database;
-    char *data;
+    LinkedList *database;//list with all the unique words in the text
 } MarkovChain;
 
 typedef struct NextNodeCounter {
     char *node_markov;
-    int frequency;
-    MarkovChain markov_node ;
+    int frequency;//counts the number of times that word2 appears right after word 1 in the text
+    struct MarkovNode *markov_node ; //point to  the next possible word
 } NextNodeCounter;
 
 typedef struct MarkovNode {
-    char *data;
-    NextNodeCounter *counter_list;
+    char *data; //pointer to word
+    NextNodeCounter *counter_list;//point to all possible next words
     int counter_list_size ;
 } MarkovNode;
 
@@ -39,7 +38,6 @@ typedef struct MarkovNode {
  * @return
  */
 MarkovNode* get_first_random_node(MarkovChain *markov_chain);
-
 /**
  * Choose randomly the next state, depend on it's occurrence frequency.
  * @param state_struct_ptr MarkovNode to choose from

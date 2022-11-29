@@ -16,12 +16,12 @@ void print_markov_chain(struct MarkovChain* markov_chain)
     Node* cur = list->first;
     for (int i = 0; i < list->size; i++)
     {
-        printf("%d.\t%s : [ ", i, cur->data->data);
+        printf("%d.\t %s : [ ", i, markov_chain->database->first->data->data);/*
         struct NextNodeCounter* arr = cur->data->counter_list;
         for (int j = 0; j < cur->data->counter_list_size; j++)
         {
-            printf("{%s : %d} ", arr[j].markov_node.data, arr[j].frequency);
-        }
+            printf("{%s : %d} ", arr[j].markov_node->data, arr[j].frequency);
+        }*/
         printf("]\n");
         cur = cur->next;
     }
@@ -33,12 +33,34 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
     }
+    LinkedList *linkedlist = malloc(sizeof(LinkedList)) ;
+    markov_chain->database = linkedlist ;
+    while(fgets(text ,NUM_OF_CHARS,fp ) != NULL ) {
 
-    while(fgets(text ,NUM_OF_CHARS,fp ) != NULL){
-        printf("%s",text) ;
-
+        char *token;
+        /* get the first token */
+        token = strtok(text, " ");
+        /* walk through other tokens */
+        while( token != NULL ) {
+            //printf( " %s\n", token );
+            if((add(markov_chain->database, token)) != 0){
+                fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
+                return EXIT_FAILURE ;
+            }
+            token = strtok(NULL, " ");
+        }
     }
     free(text) ;
+    return EXIT_SUCCESS ;
+}
+void dest(struct MarkovChain *markovChain){
+    printf("in") ;
+    while (markovChain->database->first->next){
+        free(markovChain->database->last->data->data);
+        free(markovChain->database->last->data);
+        free(markovChain->database->last) ;
+        markovChain->database->last = NULL ;
+    }
 }
 
 int main(int argc ,char* argv[]){
@@ -53,14 +75,17 @@ int main(int argc ,char* argv[]){
         num_of_words_to_read = strtol(argv[4], NULL, 10);;
     }
     char* input_path = argv[3] ;
-    MarkovChain * base_root;
+    MarkovChain * base_root = malloc(sizeof (MarkovChain));
     FILE* in = fopen ( input_path, "r") ;
     if (in == NULL) {
         fprintf(stderr,FILE_FAIL ) ;
         return EXIT_FAILURE ;
     }
-    fill_database(in, num_of_words_to_read,base_root);
+    printf("in") ;
 
+    fill_database(in, num_of_words_to_read,base_root);
+    dest(base_root) ;
+    //print_markov_chain(base_root) ;
     fclose(in) ;
 
 }

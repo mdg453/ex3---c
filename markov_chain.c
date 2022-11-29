@@ -1,4 +1,5 @@
 #include "markov_chain.h"
+#include "linked_list.h"
 
 /**
 * Get random number between 0 and max_number [0, max_number).
@@ -14,7 +15,19 @@ int get_random_number(int max_number)
  * @param markov_chain
  * @return
  */
-MarkovNode* get_first_random_node(MarkovChain *markov_chain);
+MarkovNode* get_first_random_node(MarkovChain *markov_chain){
+    if(markov_chain == NULL){
+        fprintf(stderr, BAD_CHAIN);
+        return 1 ;
+    }
+    Node *rand_node = markov_chain->database->first ;
+    int ran_num = get_random_number(markov_chain->database->size) ;
+    for (int i = 0 ; i < ran_num ; i++) {
+        rand_node = rand_node->next ;
+    }
+    return rand_node->data ;
+}
+
 
 /**
  * Choose randomly the next state, depend on it's occurrence frequency.
@@ -37,9 +50,11 @@ first_node, int max_length);
 /**
  * Free markov_chain and all of it's content from memory
  * @param markov_chain markov_chain to free
- */
-void free_markov_chain(MarkovChain ** ptr_chain);
 
+void free_markov_chain(MarkovChain ** ptr_chain){
+    LinkedList list = get_node_from_database(ptr_chain,)
+}
+*/
 /**
  * Add the second markov_node to the counter list of the first markov_node.
  * If already in list, update it's counter value.
@@ -57,9 +72,11 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node);
  * @param data_ptr the state to look for
  * @return Pointer to the Node wrapping given state, NULL if state not in
  * database.
- */
-Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr);
 
+Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
+    if (&data_ptr == &markov_chain)
+}
+ */
 /**
 * If data_ptr in markov_chain, return it's node. Otherwise, create new
  * node, add to end of markov_chain's database and return it.
