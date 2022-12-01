@@ -76,6 +76,7 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
 void generate_random_sequence(MarkovChain *markov_chain, MarkovNode *first_node, int max_length){
     int i = 0 ;
     MarkovNode *traveler = first_node ;
+    printf("in");
     while (i<max_length && traveler->counter_list != NULL){
         traveler = get_next_random_node(first_node) ;
         printf("%s ",traveler->data) ;
@@ -177,7 +178,8 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
         fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
         return NULL ;
     }
-    Node *traveler = markov_chain->database->first ;
+
+    Node *traveler = markov_chain->database->first ;/*
     while (traveler->next != NULL){
         if (traveler->data->data == data_ptr){
             return traveler ;
@@ -192,7 +194,7 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
     new_node->data->data = data_ptr ;
     markov_chain->database->last = new_node ;
     markov_chain->database->size++ ;
-    return new_node ;
+    return new_node ;*/
 }
 
 
