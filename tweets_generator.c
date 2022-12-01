@@ -16,12 +16,13 @@ void print_markov_chain(struct MarkovChain* markov_chain)
     Node* cur = list->first;
     for (int i = 0; i < list->size; i++)
     {
-        printf("%d.\t %s : [ ", i, markov_chain->database->first->data->data);/*
+        printf("%d.\t %s : [ ", i, markov_chain->database->first->data->data);
         struct NextNodeCounter* arr = cur->data->counter_list;
         for (int j = 0; j < cur->data->counter_list_size; j++)
         {
             printf("{%s : %d} ", arr[j].markov_node->data, arr[j].frequency);
-        }*/
+        }
+
         printf("]\n");
         cur = cur->next;
     }
@@ -53,15 +54,6 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     free(text) ;
     return EXIT_SUCCESS ;
 }
-void dest(struct MarkovChain *markovChain){
-    printf("in") ;
-    while (markovChain->database->first->next){
-        free(markovChain->database->last->data->data);
-        free(markovChain->database->last->data);
-        free(markovChain->database->last) ;
-        markovChain->database->last = NULL ;
-    }
-}
 
 int main(int argc ,char* argv[]){
     if(argc != ARGC5 && argc != ARGC4) {
@@ -81,10 +73,13 @@ int main(int argc ,char* argv[]){
         fprintf(stderr,FILE_FAIL ) ;
         return EXIT_FAILURE ;
     }
-    printf("in") ;
-
     fill_database(in, num_of_words_to_read,base_root);
-    dest(base_root) ;
+    //print_markov_chain(base_root) ;
+    MarkovChain **point_to_base = &base_root ;
+    //print_markov_chain(base_root) ;
+    MarkovNode *testi = get_first_random_node(base_root) ;
+    MarkovNode *tust = get_next_random_node(testi) ;
+    free_markov_chain(point_to_base) ;
     //print_markov_chain(base_root) ;
     fclose(in) ;
 

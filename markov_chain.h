@@ -21,9 +21,8 @@ typedef struct MarkovChain {
 } MarkovChain;
 
 typedef struct NextNodeCounter {
-    char *node_markov;
+    struct MarkovNode *markov_node ; //point to the node with the next possible word
     int frequency;//counts the number of times that word2 appears right after word 1 in the text
-    struct MarkovNode *markov_node ; //point to  the next possible word
 } NextNodeCounter;
 
 typedef struct MarkovNode {
