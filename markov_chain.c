@@ -125,7 +125,22 @@ void free_markov_chain(MarkovChain ** ptr_chain){
  * @return success/failure: true if the process was successful, false if in
  * case of allocation error.
  */
-bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node);
+bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
+    MarkovNode *traveler = first_node->counter_list->markov_node ;
+    for (int i = 0; i < first_node->counter_list_size; ++i) {
+        if (traveler->data == second_node->data){
+            traveler->counter_list->frequency ++ ;
+            return EXIT_SUCCESS ;
+        }
+    }
+    realloc(traveler->counter_list->markov_node, sizeof(MarkovNode)) ;
+    traveler->counter_list->markov_node = second_node ;
+    if(traveler->counter_list->markov_node == NULL){
+        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
+        return EXIT_FAILURE ;
+    }
+    return EXIT_SUCCESS ;
+}
 
 /**
 * Check if data_ptr is in database. If so, return the markov_node wrapping it in
@@ -135,7 +150,19 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node);
  * @return Pointer to the Node wrapping given state, NULL if state not in
  * database.
  */
-Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr);
+Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
+    if(markov_chain == NULL){
+        fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
+        return NULL ;
+    }
+    Node *traveler = markov_chain->database->first ;
+    while (traveler->next != NULL) {
+        if(traveler->data->data == data_ptr){
+            return traveler ;
+        }
+    }
+    return NULL ;
+}
 
 /**
 * If data_ptr in markov_chain, return it's node. Otherwise, create new
@@ -145,9 +172,31 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr);
  * @return markov_node wrapping given data_ptr in given chain's database,
  * returns NULL in case of memory allocation failure.
  */
-Node* add_to_database(MarkovChain *markov_chain, char *data_ptr);
+Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
+    if(markov_chain == NULL){
+        fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
+        return NULL ;
+    }
+    Node *traveler = markov_chain->database->first ;
+    while (traveler->next != NULL){
+        if (traveler->data->data == data_ptr){
+            return traveler ;
+        }
+    }
+    realloc(traveler->next, sizeof(Node)) ;
+    Node *new_node = traveler->next ;
+    if(traveler->next == NULL){
+        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
+        return NULL ;
+    }
+    new_node->data->data = data_ptr ;
+    markov_chain->database->last = new_node ;
+    markov_chain->database->size++ ;
+    return new_node ;
+}
 
-int get_random_number(int max_number);
+
+
 
 
 

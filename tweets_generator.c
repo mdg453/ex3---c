@@ -8,7 +8,7 @@
 #define ARGC4 4
 #define FILE_FAIL "Error:The given file is invalid.\n"
 #define NUM_OF_CHARS  1000
-
+/*
 void print_markov_chain(struct MarkovChain* markov_chain)
 {
     printf("MarkovChain:\n");
@@ -27,7 +27,7 @@ void print_markov_chain(struct MarkovChain* markov_chain)
         cur = cur->next;
     }
 }
-
+*/
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     char * text = calloc(words_to_read, sizeof(char)) ;
     if(text == NULL){
@@ -35,9 +35,12 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
         return EXIT_FAILURE ;
     }
     LinkedList *linkedlist = malloc(sizeof(LinkedList)) ;
+    if(linkedlist == NULL){
+        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
+        return EXIT_FAILURE ;
+    }
     markov_chain->database = linkedlist ;
     while(fgets(text ,NUM_OF_CHARS,fp ) != NULL ) {
-
         char *token;
         /* get the first token */
         token = strtok(text, " ");
