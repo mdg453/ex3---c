@@ -1,6 +1,7 @@
 #include "markov_chain.h"
 #include "linked_list.h"
 #include <string.h>
+#define NUMS "not enough words for sentence"
 /**
 * Get random number between 0 and max_number [0, max_number).
 * @param max_number maximal number to return (not including)
@@ -39,7 +40,6 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
  * @return MarkovNode of the chosen state
  */
 MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
-    printf("in") ;
     if(state_struct_ptr == NULL){
         fprintf(stderr, BAD_CHAIN);
         return NULL ;
@@ -48,19 +48,14 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
         fprintf(stderr, BAD_CHAIN);
         return NULL ;
     }
-
+    int run = 0 ;
     int biggest = 0;
-    MarkovNode *the_node = state_struct_ptr;
-    MarkovNode *running_node = state_struct_ptr;
+    MarkovNode *the_node = calloc(1, sizeof (MarkovNode)) ;
     for (int i = 0 ; i < state_struct_ptr->counter_list_size; i++) {
-        //if(running_node->counter_list->frequency > biggest) {
-          //  the_node = running_node->counter_list->markov_node ;
-           // biggest = the_node->counter_list->frequency ;
-       // }
-       if (running_node != NULL) {
-    //       running_node = running_node->counter_list->markov_node;
-       }
-
+        run = state_struct_ptr->counter_list[i].frequency ;
+        if (run > biggest){
+            memcpy(the_node,state_struct_ptr->counter_list[i].markov_node, sizeof(MarkovNode)) ;
+        }
     }
     return the_node ;
 }
@@ -75,13 +70,34 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
  */
 void generate_random_sequence(MarkovChain *markov_chain,
                                         MarkovNode *first_node, int max_length){
-    int i = 0 ;
-    MarkovNode *traveler = first_node ;
-    printf("in");
-    while (i<max_length && traveler->counter_list != NULL){
-        traveler = get_next_random_node(first_node) ;
-        printf("%s ",traveler->data) ;
+    if(max_length < 2) {
+        fprintf(stderr, NUMS) ;
+        return;
     }
+    MarkovChain *new_sentence = calloc(1, sizeof(MarkovNode)) ;
+    LinkedList *linkedlist = malloc(sizeof(LinkedList)) ;
+    if(linkedlist == NULL){
+        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
+        return ;
+    }
+    new_sentence->database = linkedlist ;
+    if(new_sentence == NULL) {
+        fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
+        return;
+    }
+    first_node = get_first_random_node(markov_chain) ;
+    add_to_database(new_sentence, first_node->data);
+    printf("%s",new_sentence->database->first->data->data);
+    for (int i = 0 ; i<max_length; i ++){
+        first_node = get_next_random_node(first_node) ;
+        add_to_database(new_sentence, first_node->data) ;
+    }
+    Node *traveler = new_sentence->database->first ;
+    for (int i = 0; i < max_length; i++) {
+        printf("%s ", traveler->data->data);
+        traveler = traveler->next;
+    }
+
 }
 
 /**
@@ -108,7 +124,7 @@ void free_markov_chain(MarkovChain ** ptr_chain){
     }
     for(int i = 0 ; i < markovChain.database->size ; i++) {
         free(markovChain.database->first->data->data) ;
-        // todo - free (first->data->counterlist)
+        free(markovChain.database->first->data->counter_list) ;
         free(markovChain.database->first->data) ;
         markovChain.database->first = markovChain.database->first->next ;
     }
@@ -134,13 +150,39 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
             return EXIT_SUCCESS ;
         }
     }
-    memcpy(first_node->counter_list->markov_node->data , second_node->data,
-                                                    strlen(second_node->data)+1);
-    if(traveler->counter_list->markov_node == NULL){
-        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
+    if (first_node->counter_list_size == 0)
+    {
+        first_node->counter_list = calloc(1, sizeof(NextNodeCounter));
+        if(first_node->counter_list == NULL) {
+            fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
+            return EXIT_FAILURE ;
+        }
+        first_node->counter_list_size++;
+        first_node->counter_list[0] = (NextNodeCounter){second_node,1};
+        return true;
+    }
+    for(int i = 0; i < first_node->counter_list_size; i++)
+    {
+        char* first_node_data = first_node->counter_list[i].markov_node->data;
+         if(strcmp(first_node_data, second_node->data) == 0)
+         {
+             first_node->counter_list[i].frequency++;
+             return true;
+         }
+    }
+    first_node->counter_list_size++ ;
+    NextNodeCounter *temp = realloc(first_node->counter_list,
+                                    (first_node->counter_list_size)*sizeof(NextNodeCounter));
+    if(temp == NULL) {
+        fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
     }
-    return EXIT_SUCCESS ;
+    first_node->counter_list = temp ;
+    first_node->counter_list[first_node->counter_list_size-1] =
+                                            (NextNodeCounter){second_node,1};
+    return true;
+
+
 }
 
 /**
@@ -188,18 +230,8 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
     memcpy(markovNode->data , data_ptr, strlen(data_ptr)+1);
     markovNode->counter_list = NULL;
     markovNode->counter_list_size = 0;
-    Node *traveler = get_node_from_database(markov_chain,data_ptr) ;
-    if (traveler == NULL){
-        if(add(markov_chain->database, markovNode) != 0) {
-            fprintf(stderr, ALLOCATION_ERROR_MASSAGE);
-            return NULL;
-        }
-        return markov_chain->database->last;
-    }
-    else{
-        return traveler ;
-
-    }
+    add(markov_chain->database, markovNode);
+    return markov_chain->database->last;
 }
 
 

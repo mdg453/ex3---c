@@ -39,11 +39,14 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     }
     markov_chain->database = linkedlist ;
     char *token;
+    MarkovNode * previus_word = NULL;
     while(fgets(text ,NUM_OF_CHARS,fp ) != NULL ) {
         text[strcspn(text, "\n")] = 0;
         token = strtok(text, " ");
         while(token != NULL && words_to_read) {
-            add_to_database(markov_chain, token) ;
+            Node * current_word = add_to_database(markov_chain, token) ;
+            add_node_to_counter_list(previus_word, current_word->data);
+            previus_word = current_word->data;
             token = strtok(NULL, " ");
             words_to_read--  ;
             //printf("\n%s----%s",markov_chain->database->first->data->data, markov_chain->database->last->data->data) ;
@@ -72,9 +75,9 @@ int main(int argc ,char* argv[]){
         return EXIT_FAILURE ;
     }
     fill_database(in, num_of_chars_to_read,base_root);
-    print_markov_chain(base_root) ;
-    MarkovChain **point_to_base = &base_root ;
+    generate_random_sequence(base_root,base_root->database->first->data,7);
     //print_markov_chain(base_root) ;
+    MarkovChain **point_to_base = &base_root ;
     free_markov_chain(point_to_base) ;
     fclose(in) ;
 
