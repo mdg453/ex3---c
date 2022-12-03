@@ -55,6 +55,7 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     return EXIT_SUCCESS ;
 }
 
+
 int main(int argc ,char* argv[]){
     if(argc < ARGC4) {
         fprintf(stderr, WRONG_INPUT) ;
