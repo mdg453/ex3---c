@@ -8,26 +8,24 @@
 #define ARGC4 4
 #define FILE_FAIL "Error:The given file is invalid.\n"
 #define NUM_OF_CHARS  1000
-/*
+
 void print_markov_chain(struct MarkovChain* markov_chain)
 {
     printf("MarkovChain:\n");
-    LinkedList* list = markov_chain->database;
-    Node* cur = list->first;
-    for (int i = 0; i < list->size; i++)
+    Node *traveler = markov_chain->database->first ;
+    for (int i = 0; i < markov_chain->database->size; i++)
     {
-        printf("%d.\t %s : [ ", i, markov_chain->database->first->data->data);
-        struct NextNodeCounter* arr = cur->data->counter_list;
+        printf("[%s]\n", traveler->data->data);
+        traveler = traveler->next;
+        /*
         for (int j = 0; j < cur->data->counter_list_size; j++)
         {
             printf("{%s : %d} ", arr[j].markov_node->data, arr[j].frequency);
         }
-
-        printf("]\n");
-        cur = cur->next;
+         */
     }
 }
-*/
+
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     char * text = calloc(words_to_read, sizeof(char)) ;
     if(text == NULL){
@@ -40,13 +38,15 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
         return EXIT_FAILURE ;
     }
     markov_chain->database = linkedlist ;
+    char *token;
     while(fgets(text ,NUM_OF_CHARS,fp ) != NULL ) {
-        char *token;
+        text[strcspn(text, "\n")] = 0;
         token = strtok(text, " ");
-        while( token != NULL ) {
-            //printf( " %s\n", token );
+        while(token != NULL && words_to_read) {
             add_to_database(markov_chain, token) ;
             token = strtok(NULL, " ");
+            words_to_read--  ;
+            //printf("\n%s----%s",markov_chain->database->first->data->data, markov_chain->database->last->data->data) ;
         }
     }
     free(text) ;
@@ -54,31 +54,28 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
 }
 
 int main(int argc ,char* argv[]){
-    if(argc != ARGC5 && argc != ARGC4) {
+    if(argc < ARGC4) {
         fprintf(stderr, WRONG_INPUT) ;
         return EXIT_FAILURE ;
     }
     unsigned int seed = strtol(argv[1], NULL, 10);
     unsigned int tweets_num = strtol(argv[2], NULL, 10);
-    unsigned int num_of_words_to_read = 1000 ;
+    unsigned int num_of_chars_to_read = 1000 ;
     if(argc == 4) {
-        num_of_words_to_read = strtol(argv[4], NULL, 10);;
+        num_of_chars_to_read = strtol(argv[4], NULL, 10);;
     }
     char* input_path = argv[3] ;
-    MarkovChain * base_root = malloc(sizeof (MarkovChain));
+    MarkovChain * base_root = calloc(1, sizeof (MarkovChain));
     FILE* in = fopen ( input_path, "r") ;
     if (in == NULL) {
         fprintf(stderr,FILE_FAIL ) ;
         return EXIT_FAILURE ;
     }
-    fill_database(in, num_of_words_to_read,base_root);
-    //print_markov_chain(base_root) ;
+    fill_database(in, num_of_chars_to_read,base_root);
+    print_markov_chain(base_root) ;
     MarkovChain **point_to_base = &base_root ;
     //print_markov_chain(base_root) ;
-   // MarkovNode *testi = get_first_random_node(base_root) ;
-    //MarkovNode *tust = get_next_random_node(testi) ;
     free_markov_chain(point_to_base) ;
-    //print_markov_chain(base_root) ;
     fclose(in) ;
 
 }

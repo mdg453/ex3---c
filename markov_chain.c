@@ -1,6 +1,6 @@
 #include "markov_chain.h"
 #include "linked_list.h"
-
+#include <string.h>
 /**
 * Get random number between 0 and max_number [0, max_number).
 * @param max_number maximal number to return (not including)
@@ -73,7 +73,8 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
  *                   if NULL- choose a random markov_node
  * @param  max_length maximum length of chain to generate
  */
-void generate_random_sequence(MarkovChain *markov_chain, MarkovNode *first_node, int max_length){
+void generate_random_sequence(MarkovChain *markov_chain,
+                                        MarkovNode *first_node, int max_length){
     int i = 0 ;
     MarkovNode *traveler = first_node ;
     printf("in");
@@ -100,20 +101,19 @@ void free_markov_chain(MarkovChain ** ptr_chain){
         return;
     }
     if(markovChain.database->first == NULL){
-        //free(markovChain->database) ;
+        free(markovChain.database) ;
         free(*ptr_chain) ;
         ptr_chain = NULL ;
         return;
     }
-    while (markovChain.database->first->next != NULL) {
-        Node *placekeeper = markovChain.database->first->next ;
-        free(markovChain.database->first) ;
-        //free(markovChain->database->first->next) ;
-        markovChain.database->first = placekeeper ;
+    for(int i = 0 ; i < markovChain.database->size ; i++) {
+        free(markovChain.database->first->data->data) ;
+        // todo - free (first->data->counterlist)
+        free(markovChain.database->first->data) ;
+        markovChain.database->first = markovChain.database->first->next ;
     }
     free(markovChain.database) ;
-    //free(*ptr_chain) ;
-    ptr_chain = NULL ;
+    *ptr_chain = NULL ;
 
 }
 
@@ -134,8 +134,8 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
             return EXIT_SUCCESS ;
         }
     }
-    realloc(traveler->counter_list->markov_node, sizeof(MarkovNode)) ;
-    traveler->counter_list->markov_node = second_node ;
+    memcpy(first_node->counter_list->markov_node->data , second_node->data,
+                                                    strlen(second_node->data)+1);
     if(traveler->counter_list->markov_node == NULL){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
@@ -156,11 +156,12 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
         fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
         return NULL ;
     }
-    Node *traveler = markov_chain->database->first ;
-    while (traveler->next != NULL) {
-        if(traveler->data->data == data_ptr){
+    Node *traveler = markov_chain->database->first;
+    for (int i = 0; i < markov_chain->database->size; i++) {
+        if (traveler->data->data == data_ptr){
             return traveler ;
         }
+        traveler = traveler->next ;
     }
     return NULL ;
 }
@@ -178,23 +179,27 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
         fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
         return NULL ;
     }
-
-    Node *traveler = markov_chain->database->first ;/*
-    while (traveler->next != NULL){
-        if (traveler->data->data == data_ptr){
-            return traveler ;
+    if(markov_chain->database == NULL) {
+        fprintf(stderr, "NO DATA IN MARKOV CHAIN");
+        return NULL;
+    }
+    MarkovNode *markovNode = calloc(1, sizeof(MarkovNode)) ;
+    markovNode->data = malloc(strlen(data_ptr)+1);
+    memcpy(markovNode->data , data_ptr, strlen(data_ptr)+1);
+    markovNode->counter_list = NULL;
+    markovNode->counter_list_size = 0;
+    Node *traveler = get_node_from_database(markov_chain,data_ptr) ;
+    if (traveler == NULL){
+        if(add(markov_chain->database, markovNode) != 0) {
+            fprintf(stderr, ALLOCATION_ERROR_MASSAGE);
+            return NULL;
         }
+        return markov_chain->database->last;
     }
-    realloc(traveler->next, sizeof(Node)) ;
-    Node *new_node = traveler->next ;
-    if(traveler->next == NULL){
-        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
-        return NULL ;
+    else{
+        return traveler ;
+
     }
-    new_node->data->data = data_ptr ;
-    markov_chain->database->last = new_node ;
-    markov_chain->database->size++ ;
-    return new_node ;*/
 }
 
 
