@@ -49,7 +49,6 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
             previus_word = current_word->data;
             token = strtok(NULL, " ");
             words_to_read--  ;
-            //printf("\n%s----%s",markov_chain->database->first->data->data, markov_chain->database->last->data->data) ;
         }
     }
     free(text) ;

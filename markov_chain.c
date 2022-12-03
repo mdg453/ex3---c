@@ -54,7 +54,8 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
     for (int i = 0 ; i < state_struct_ptr->counter_list_size; i++) {
         run = state_struct_ptr->counter_list[i].frequency ;
         if (run > biggest){
-            memcpy(the_node,state_struct_ptr->counter_list[i].markov_node, sizeof(MarkovNode)) ;
+            memcpy(the_node,state_struct_ptr->counter_list[i].markov_node,
+                                                            sizeof(MarkovNode)) ;
         }
     }
     return the_node ;
