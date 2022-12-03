@@ -75,7 +75,7 @@ int main(int argc ,char* argv[]){
         return EXIT_FAILURE ;
     }
     fill_database(in, num_of_chars_to_read,base_root);
-    generate_random_sequence(base_root,base_root->database->first->data,7);
+    generate_random_sequence(base_root,base_root->database->first->data,tweets_num);
     //print_markov_chain(base_root) ;
     MarkovChain **point_to_base = &base_root ;
     free_markov_chain(point_to_base) ;

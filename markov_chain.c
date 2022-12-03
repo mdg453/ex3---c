@@ -150,6 +150,9 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
             return EXIT_SUCCESS ;
         }
     }
+    if(first_node->data[-1] == '.') {
+        return EXIT_SUCCESS ;
+    }
     if (first_node->counter_list_size == 0)
     {
         first_node->counter_list = calloc(1, sizeof(NextNodeCounter));
