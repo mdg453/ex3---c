@@ -18,10 +18,6 @@ int get_random_number(int max_number)
 */
 
 MarkovNode* get_first_random_node(MarkovChain *markov_chain){
-    if(markov_chain == NULL){
-        fprintf(stderr, BAD_CHAIN);
-        return NULL ;
-    }
     if(markov_chain->database->first == NULL){
         fprintf(stderr, BAD_CHAIN);
         return NULL ;
@@ -38,9 +34,6 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
             rand_node = rand_node->next ;
         }
     }
-    //if(rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
-      //  return get_first_random_node(markov_chain) ;
-    //}
     return rand_node->data ;
 }
 
@@ -91,7 +84,7 @@ void generate_random_sequence(MarkovChain *markov_chain,
         first_node = get_first_random_node(markov_chain) ;
         printf("%s ",first_node->data) ;
         int j = 1 ;
-        while (first_node->data[strlen(first_node->data)-1] != '.' && j < 19) {
+        while (first_node->data[strlen(first_node->data)-1] != '.' && j < 20) {
             first_node = get_next_random_node(first_node);
             if (first_node->data[strlen(first_node->data)-1] == '.'){
                 printf("%s",first_node->data) ;
@@ -204,8 +197,8 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
     }
     Node *traveler = markov_chain->database->first;
     for (int i = 0; i < markov_chain->database->size; i++) {
-        if (traveler->data->data == data_ptr){
-            return traveler ;
+        if (strcmp(traveler->data->data, data_ptr) == 0){
+            return traveler;
         }
         traveler = traveler->next ;
     }
