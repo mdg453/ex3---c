@@ -64,7 +64,8 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
             return state_struct_ptr->counter_list[i].markov_node ;
         }
     }
-    return state_struct_ptr->counter_list[state_struct_ptr->counter_list_size].markov_node ;
+    return state_struct_ptr->counter_list
+                    [state_struct_ptr->counter_list_size].markov_node ;
 }
 
 /**
