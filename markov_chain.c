@@ -183,7 +183,6 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
 
 
 }
-
 /**
 * Check if data_ptr is in database. If so, return the markov_node wrapping it in
  * the markov_chain, otherwise return NULL.
