@@ -2,6 +2,7 @@
 #include "linked_list.h"
 #include <string.h>
 #define NUMS "not enough words for sentence"
+#define MAX_TWEET_LEN 20
 /**
 * Get random number between 0 and max_number [0, max_number).
 * @param max_number maximal number to return (not including)
@@ -85,7 +86,7 @@ void generate_random_sequence(MarkovChain *markov_chain,
         first_node = get_first_random_node(markov_chain) ;
         printf("%s ",first_node->data) ;
         int j = 1 ;
-        while (first_node->data[strlen(first_node->data)-1] != '.' && j < 20) {
+        while (first_node->data[strlen(first_node->data)-1] != '.' && j < MAX_TWEET_LEN) {
             first_node = get_next_random_node(first_node);
             if (first_node->data[strlen(first_node->data)-1] == '.'){
                 printf("%s",first_node->data) ;
@@ -170,7 +171,8 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
          }
     }
     first_node->counter_list_size++ ;
-    NextNodeCounter *temp = realloc(first_node->counter_list,
+    NextNodeCounter *temp =
+            realloc(first_node->counter_list,
                                     (first_node->counter_list_size)*sizeof(NextNodeCounter));
     if(temp == NULL) {
         fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
