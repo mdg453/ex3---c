@@ -28,7 +28,6 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     }
     Node *rand_node = markov_chain->database->first ;
     int ran_num = get_random_number(markov_chain->database->size) ;
-    printf("%d" , ran_num) ;
     for (int i = 0 ; i < ran_num  ; ++i) {
         rand_node = rand_node->next ;
     }
