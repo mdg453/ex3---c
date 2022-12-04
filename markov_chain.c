@@ -28,13 +28,13 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     }
     Node *rand_node = markov_chain->database->first ;
     int ran_num = get_random_number(markov_chain->database->size) ;
-    for (int i = 0 ; i < ran_num  ; ++i) {
+    for (int i = 0 ; i <= ran_num  ; ++i) {
         rand_node = rand_node->next ;
     }
     while(rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
         rand_node = markov_chain->database->first ;
         ran_num = get_random_number(markov_chain->database->size) ;
-        for (int i = 0 ; i < ran_num ; ++i) {
+        for (int i = 0 ; i <= ran_num ; ++i) {
             rand_node = rand_node->next ;
         }
     }
