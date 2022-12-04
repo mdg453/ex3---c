@@ -102,7 +102,6 @@ void generate_random_sequence(MarkovChain *markov_chain,
             }
             j++ ;
         }
-        markov_chain->database->first = markov_chain->database->first->next ;
         printf("\n") ;
     }
 }
