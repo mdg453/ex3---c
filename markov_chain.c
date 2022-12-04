@@ -86,7 +86,8 @@ void generate_random_sequence(MarkovChain *markov_chain,
         first_node = get_first_random_node(markov_chain) ;
         printf("%s ",first_node->data) ;
         int j = 1 ;
-        while (first_node->data[strlen(first_node->data)-1] != '.' && j < MAX_TWEET_LEN) {
+        while (first_node->data[strlen(first_node->data)-1] != '.' &&
+                                                        j < MAX_TWEET_LEN) {
             first_node = get_next_random_node(first_node);
             if (first_node->data[strlen(first_node->data)-1] == '.'){
                 printf("%s",first_node->data) ;
@@ -158,7 +159,8 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
             return EXIT_FAILURE ;
         }
         first_node->counter_list_size++;
-        first_node->counter_list[0] = (NextNodeCounter){second_node,1};
+        first_node->counter_list[0] = (NextNodeCounter)
+                                {second_node,1};
         return true;
     }
     for(int i = 0; i < first_node->counter_list_size; i++)
