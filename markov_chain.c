@@ -31,6 +31,10 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     for (int i = 0 ; i < ran_num ; i++) {
         rand_node = rand_node->next ;
     }
+    while (rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
+        return get_first_random_node(markov_chain) ;
+    }
+    //printf("\n-%s-\n", rand_node->data->data);
     return rand_node->data ;
 }
 
@@ -72,7 +76,7 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
  */
 void generate_random_sequence(MarkovChain *markov_chain,
                                         MarkovNode *first_node, int max_length){
-    if(max_length < 2) {
+    if(max_length < 1) {
         fprintf(stderr, NUMS) ;
         return;
     }
@@ -87,19 +91,20 @@ void generate_random_sequence(MarkovChain *markov_chain,
         fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
         return;
     }
-    first_node = get_first_random_node(markov_chain) ;
-    add_to_database(new_sentence, first_node->data);
-    printf("%s",new_sentence->database->first->data->data);
-    for (int i = 0 ; i<max_length; i ++){
-        first_node = get_next_random_node(first_node) ;
-        add_to_database(new_sentence, first_node->data) ;
-    }
-    Node *traveler = new_sentence->database->first ;
-    for (int i = 0; i < max_length; i++) {
-        printf("%s ", traveler->data->data);
-        traveler = traveler->next;
-    }
+    for (int i = 0 ; i<max_length; i ++) {
+        printf("%d. ",i+1) ;
+        first_node = get_first_random_node(markov_chain) ;
+        add_to_database(new_sentence, first_node->data);
+        printf("%s ",first_node->data) ;
+        while (first_node->data[strlen(first_node->data)-1] != '.') {
+            first_node = get_next_random_node(first_node);
+            add_to_database(new_sentence, first_node->data);
+            printf("%s ",first_node->data) ;
+        }
+        printf("\n") ;
 
+    }
+    free_markov_chain(markov_chain) ;
 }
 
 /**

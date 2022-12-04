@@ -9,22 +9,6 @@
 #define FILE_FAIL "Error:The given file is invalid.\n"
 #define NUM_OF_CHARS  1000
 
-void print_markov_chain(struct MarkovChain* markov_chain)
-{
-    printf("MarkovChain:\n");
-    Node *traveler = markov_chain->database->first ;
-    for (int i = 0; i < markov_chain->database->size; i++)
-    {
-        printf("[%s]\n", traveler->data->data);
-        traveler = traveler->next;
-        /*
-        for (int j = 0; j < cur->data->counter_list_size; j++)
-        {
-            printf("{%s : %d} ", arr[j].markov_node->data, arr[j].frequency);
-        }
-         */
-    }
-}
 
 
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
@@ -42,7 +26,7 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     char *token;
     MarkovNode * previus_word = NULL;
     while(fgets(text ,NUM_OF_CHARS,fp ) != NULL ) {
-        text[strcspn(text, "\n")] = 0;
+        text[strcspn(text, "\n")] = ' ' ;
         token = strtok(text, " ");
         while(token != NULL && words_to_read) {
             Node * current_word = add_to_database(markov_chain, token) ;
@@ -63,7 +47,7 @@ int main(int argc ,char* argv[]){
         return EXIT_FAILURE ;
     }
     unsigned int seed = strtol(argv[1], NULL, 10);
-    unsigned int tweets_num = strtol(argv[2], NULL, 10);
+    long int tweets_num = strtol(argv[2], NULL, 10);
     unsigned int num_of_chars_to_read = NUM_OF_CHARS ;
     srand(seed);
     if(argc == ARGC5) {
