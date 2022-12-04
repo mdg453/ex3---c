@@ -52,17 +52,14 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
         fprintf(stderr, BAD_CHAIN);
         return NULL ;
     }
-    int run = 0 ;
-    int biggest = 0;
-    MarkovNode *the_node = calloc(1, sizeof (MarkovNode)) ;
+    int ran_num = get_random_number(state_struct_ptr->counter_list_size);
     for (int i = 0 ; i < state_struct_ptr->counter_list_size; i++) {
-        run = state_struct_ptr->counter_list[i].frequency ;
-        if (run > biggest){
-            memcpy(the_node,state_struct_ptr->counter_list[i].markov_node,
-                                                            sizeof(MarkovNode)) ;
+        ran_num = ran_num - state_struct_ptr->counter_list[i].frequency ;
+        if (ran_num < 0){
+            return state_struct_ptr->counter_list[i].markov_node ;
         }
     }
-    return the_node ;
+    return state_struct_ptr->counter_list[state_struct_ptr->counter_list_size-1].markov_node ;
 }
 
 /**
