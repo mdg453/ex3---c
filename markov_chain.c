@@ -112,25 +112,25 @@ void free_markov_chain(MarkovChain ** ptr_chain){
     if (ptr_chain == NULL){
         return;
     }
-    MarkovChain markovChain = **ptr_chain ;
-    if (markovChain.database == NULL) {
+    MarkovChain markov_chain = **ptr_chain ;
+    if (markov_chain.database == NULL) {
         free(*ptr_chain) ;
         *ptr_chain = NULL ;
         return;
     }
-    if(markovChain.database->first == NULL){
-        free(markovChain.database) ;
+    if(markov_chain.database->first == NULL){
+        free(markov_chain.database) ;
         free(*ptr_chain) ;
         *ptr_chain = NULL ;
         return;
     }
-    for(int i = 0 ; i < markovChain.database->size ; i++) {
-        free(markovChain.database->first->data->data) ;
-        free(markovChain.database->first->data->counter_list) ;
-        free(markovChain.database->first->data) ;
-        markovChain.database->first = markovChain.database->first->next ;
+    for(int i = 0 ; i < markov_chain.database->size ; i++) {
+        free(markov_chain.database->first->data->data) ;
+        free(markov_chain.database->first->data->counter_list) ;
+        free(markov_chain.database->first->data) ;
+        markov_chain.database->first = markov_chain.database->first->next ;
     }
-    free(markovChain.database) ;
+    free(markov_chain.database) ;
     *ptr_chain = NULL ;
 
 }
