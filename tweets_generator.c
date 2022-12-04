@@ -64,8 +64,9 @@ int main(int argc ,char* argv[]){
     }
     unsigned int seed = strtol(argv[1], NULL, 10);
     unsigned int tweets_num = strtol(argv[2], NULL, 10);
-    unsigned int num_of_chars_to_read = 1000 ;
-    if(argc == 4) {
+    unsigned int num_of_chars_to_read = NUM_OF_CHARS ;
+    srand(seed);
+    if(argc == ARGC5) {
         num_of_chars_to_read = strtol(argv[4], NULL, 10);;
     }
     char* input_path = argv[3] ;

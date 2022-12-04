@@ -115,13 +115,13 @@ void free_markov_chain(MarkovChain ** ptr_chain){
     MarkovChain markovChain = **ptr_chain ;
     if (markovChain.database == NULL) {
         free(*ptr_chain) ;
-        ptr_chain = NULL ;
+        *ptr_chain = NULL ;
         return;
     }
     if(markovChain.database->first == NULL){
         free(markovChain.database) ;
         free(*ptr_chain) ;
-        ptr_chain = NULL ;
+        *ptr_chain = NULL ;
         return;
     }
     for(int i = 0 ; i < markovChain.database->size ; i++) {
@@ -145,12 +145,9 @@ void free_markov_chain(MarkovChain ** ptr_chain){
  * case of allocation error.
  */
 bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
-    MarkovNode *traveler = first_node->counter_list->markov_node ;
-    for (int i = 0; i < first_node->counter_list_size; ++i) {
-        if (traveler->data == second_node->data){
-            traveler->counter_list->frequency ++ ;
-            return EXIT_SUCCESS ;
-        }
+    if (first_node == NULL || second_node == NULL)
+    {
+        return false;
     }
     if(first_node->data[-1] == '.') {
         return EXIT_SUCCESS ;
@@ -231,12 +228,16 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
         fprintf(stderr, "NO DATA IN MARKOV CHAIN");
         return NULL;
     }
-    MarkovNode *markovNode = calloc(1, sizeof(MarkovNode)) ;
-    markovNode->data = malloc(strlen(data_ptr)+1);
-    memcpy(markovNode->data , data_ptr, strlen(data_ptr)+1);
-    markovNode->counter_list = NULL;
-    markovNode->counter_list_size = 0;
-    add(markov_chain->database, markovNode);
+    Node *traveler = get_node_from_database(markov_chain,data_ptr) ;
+    if (traveler != NULL){
+        return traveler;
+    }
+    MarkovNode *markov_node = calloc(1, sizeof(MarkovNode)) ;
+    markov_node->data = malloc(strlen(data_ptr)+1);
+    memcpy(markov_node->data , data_ptr, strlen(data_ptr)+1);
+    markov_node->counter_list = NULL;
+    markov_node->counter_list_size = 0;
+    add(markov_chain->database, markov_node);
     return markov_chain->database->last;
 }
 
