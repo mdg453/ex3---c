@@ -7,12 +7,12 @@
 #define ARGC5 5
 #define ARGC4 4
 #define FILE_FAIL "Error:The given file is invalid.\n"
-#define NUM_OF_CHARS  1000
-
+#define NUM_OF_CHARS  1000000
+#define NUM1000 1000
 
 
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
-    char * text = calloc(NUM_OF_CHARS, sizeof(char)) ;
+    char * text = calloc(NUM1000, sizeof(char)) ;
     if(text == NULL){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
@@ -25,12 +25,12 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
     markov_chain->database = linkedlist ;
     char *token;
     MarkovNode * previus_word = NULL;
-    while(fgets(text ,NUM_OF_CHARS,fp ) != NULL ) {
+    Node * current_word ;
+    while(fgets(text ,NUM_OF_CHARS,fp ) != NULL && words_to_read) {
         text[strcspn(text, "\n")] = ' ' ;
-        //printf("%s", text) ;
         token = strtok(text, " ");
-        while(token != NULL, words_to_read > 0) {
-            Node * current_word = add_to_database(markov_chain, token) ;
+        while(token != NULL && words_to_read > 0) {
+            current_word = add_to_database(markov_chain, token) ;
             add_node_to_counter_list(previus_word, current_word->data);
             previus_word = current_word->data;
             token = strtok(NULL, " ");
@@ -64,7 +64,6 @@ int main(int argc ,char* argv[]){
     fill_database(in, num_of_chars_to_read,base_root);
     generate_random_sequence(base_root,base_root->database->first->data,tweets_num);
     MarkovChain **point_to_base = &base_root ;
-    //printf("%d", base_root->database->size) ;
     free_markov_chain(point_to_base) ;
     fclose(in) ;
 

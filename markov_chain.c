@@ -28,16 +28,20 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     }
     Node *rand_node = markov_chain->database->first ;
     int ran_num = get_random_number(markov_chain->database->size) ;
-    for (int i = 0 ; i <= ran_num  ; ++i) {
+    printf("%d" , ran_num) ;
+    for (int i = 0 ; i < ran_num  ; ++i) {
         rand_node = rand_node->next ;
     }
     while(rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
-        rand_node = markov_chain->database->first ;
         ran_num = get_random_number(markov_chain->database->size) ;
-        for (int i = 0 ; i <= ran_num ; ++i) {
+        rand_node = markov_chain->database->first ;
+        for (int i = 0 ; i < ran_num  ; ++i) {
             rand_node = rand_node->next ;
         }
     }
+    //if(rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
+      //  return get_first_random_node(markov_chain) ;
+    //}
     return rand_node->data ;
 }
 
@@ -98,6 +102,7 @@ void generate_random_sequence(MarkovChain *markov_chain,
             }
             j++ ;
         }
+        markov_chain->database->first = markov_chain->database->first->next ;
         printf("\n") ;
     }
 }
@@ -149,7 +154,7 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
     {
         return false;
     }
-    if(first_node->data[-1] == '.') {
+    if(first_node->data[strlen(first_node->data)-1] == '.') {
         return EXIT_SUCCESS ;
     }
     if (first_node->counter_list_size == 0)
