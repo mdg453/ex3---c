@@ -43,29 +43,27 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
  * @param state_struct_ptr MarkovNode to choose from
  * @return MarkovNode of the chosen state
  */
-void generate_random_sequence(MarkovChain *markov_chain,
-                              MarkovNode *first_node, int max_length){
-    if(max_length < 1) {
-        fprintf(stderr, NUMS) ;
-        return;
+MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
+    if(state_struct_ptr == NULL){
+        fprintf(stderr, BAD_CHAIN);
+        return NULL ;
     }
-    for (int i = 0 ; i<max_length; i ++) {
-        printf("Tweet %d: ",i+1) ;
-        first_node = get_first_random_node(markov_chain) ;
-        printf("%s ",first_node->data) ;
-        int j = 1 ;
-        while (first_node->data[strlen(first_node->data)-1] != '.' && j < 20) {
-            first_node = get_next_random_node(first_node);
-            if (first_node->data[strlen(first_node->data)-1] == '.'){
-                printf("%s",first_node->data) ;
-            }
-            else {
-                printf("%s ", first_node->data);
-            }
-            j++ ;
+    if(state_struct_ptr->counter_list == NULL){
+        fprintf(stderr, BAD_CHAIN);
+        return NULL ;
+    }
+    int sum = 0 ;
+    for (int j = 0 ; j < state_struct_ptr->counter_list_size; j++) {
+        sum += state_struct_ptr->counter_list[j].frequency ;
+    }
+    int ran_num = get_random_number(sum);
+    for (int i = 0 ; i < state_struct_ptr->counter_list_size; i++) {
+        ran_num -= state_struct_ptr->counter_list[i].frequency ;
+        if (ran_num < 0){
+            return state_struct_ptr->counter_list[i].markov_node ;
         }
-        printf("\n") ;
     }
+    return state_struct_ptr->counter_list[state_struct_ptr->counter_list_size].markov_node ;
 }
 
 /**
