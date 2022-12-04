@@ -28,10 +28,10 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     }
     Node *rand_node = markov_chain->database->first ;
     int ran_num = get_random_number(markov_chain->database->size) ;
-    for (int i = 0 ; i < ran_num ; i++) {
+    for (int i = 0 ; i < ran_num ; ++i) {
         rand_node = rand_node->next ;
     }
-    while (rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
+    if (rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
         return get_first_random_node(markov_chain) ;
     }
     //printf("\n-%s-\n", rand_node->data->data);
@@ -75,36 +75,28 @@ MarkovNode* get_next_random_node(MarkovNode *state_struct_ptr){
  * @param  max_length maximum length of chain to generate
  */
 void generate_random_sequence(MarkovChain *markov_chain,
-                                        MarkovNode *first_node, int max_length){
+                                MarkovNode *first_node, int max_length){
     if(max_length < 1) {
         fprintf(stderr, NUMS) ;
         return;
     }
-    MarkovChain *new_sentence = calloc(1, sizeof(MarkovNode)) ;
-    LinkedList *linkedlist = malloc(sizeof(LinkedList)) ;
-    if(linkedlist == NULL){
-        fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
-        return ;
-    }
-    new_sentence->database = linkedlist ;
-    if(new_sentence == NULL) {
-        fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
-        return;
-    }
     for (int i = 0 ; i<max_length; i ++) {
-        printf("%d. ",i+1) ;
+        printf("Tweet %d: ",i+1) ;
         first_node = get_first_random_node(markov_chain) ;
-        add_to_database(new_sentence, first_node->data);
         printf("%s ",first_node->data) ;
-        while (first_node->data[strlen(first_node->data)-1] != '.') {
+        int j = 1 ;
+        while (first_node->data[strlen(first_node->data)-1] != '.' && j < 19) {
             first_node = get_next_random_node(first_node);
-            add_to_database(new_sentence, first_node->data);
-            printf("%s ",first_node->data) ;
+            if (first_node->data[strlen(first_node->data)-1] == '.'){
+                printf("%s",first_node->data) ;
+            }
+            else {
+                printf("%s ", first_node->data);
+            }
+            j++ ;
         }
         printf("\n") ;
-
     }
-    free_markov_chain(markov_chain) ;
 }
 
 /**

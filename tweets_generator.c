@@ -12,7 +12,7 @@
 
 
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
-    char * text = calloc(words_to_read, sizeof(char)) ;
+    char * text = calloc(NUM_OF_CHARS, sizeof(char)) ;
     if(text == NULL){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
