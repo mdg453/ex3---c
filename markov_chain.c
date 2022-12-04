@@ -230,7 +230,16 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
         return traveler;
     }
     MarkovNode *markov_node = calloc(1, sizeof(MarkovNode)) ;
+    if(markov_node == NULL){
+        fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
+        return NULL ;
+    }
     markov_node->data = malloc(strlen(data_ptr)+1);
+    if(markov_node->data == NULL){
+        free(markov_node) ;
+        fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
+        return NULL ;
+    }
     memcpy(markov_node->data , data_ptr, strlen(data_ptr)+1);
     markov_node->counter_list = NULL;
     markov_node->counter_list_size = 0;
