@@ -220,6 +220,7 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
  * @return markov_node wrapping given data_ptr in given chain's database,
  * returns NULL in case of memory allocation failure.
  */
+
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
     if(markov_chain == NULL){
         fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
