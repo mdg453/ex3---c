@@ -12,7 +12,7 @@
 
 
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
-    char  text[1000];
+    char  text[NUM1000];
     LinkedList *linkedlist = malloc(sizeof(LinkedList)) ;
     if(linkedlist == NULL){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
@@ -33,7 +33,6 @@ int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
             words_to_read--  ;
         }
     }
-
     return EXIT_SUCCESS ;
 }
 
