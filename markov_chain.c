@@ -173,14 +173,14 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
     first_node->counter_list_size++ ;
     NextNodeCounter *temp =
             realloc(first_node->counter_list,
-                                    (first_node->counter_list_size)*sizeof(NextNodeCounter));
+                    (first_node->counter_list_size)*sizeof(NextNodeCounter));
     if(temp == NULL) {
         fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
         return EXIT_FAILURE ;
     }
     first_node->counter_list = temp ;
     first_node->counter_list[first_node->counter_list_size-1] =
-                                            (NextNodeCounter){second_node,1};
+               (NextNodeCounter){second_node,1};
     return true;
 
 
