@@ -16,6 +16,7 @@ int get_random_number(int max_number)
  * @param markov_chain
  * @return
 */
+
 MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     if(markov_chain == NULL){
         fprintf(stderr, BAD_CHAIN);

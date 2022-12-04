@@ -13,7 +13,6 @@
 /**
  * insert MarkovChain struct
  */
-
 struct MarkovNode;
 
 typedef struct MarkovChain {
