@@ -28,13 +28,12 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     }
     Node *rand_node = markov_chain->database->first ;
     int ran_num = get_random_number(markov_chain->database->size) ;
-    for (int i = 0 ; i < ran_num ; ++i) {
+    for (int i = 0 ; i <= ran_num ; ++i) {
         rand_node = rand_node->next ;
     }
     if (rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
         return get_first_random_node(markov_chain) ;
     }
-    //printf("\n-%s-\n", rand_node->data->data);
     return rand_node->data ;
 }
 
