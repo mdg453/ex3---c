@@ -3,21 +3,71 @@
 #include <string.h>
 #define NUMS "not enough words for sentence"
 #define MAX_TWEET_LEN 20
+typedef int(*cmp_func_t)(const void *, const void *);
+typedef char* string ;
+
+
 /**
 * Get random number between 0 and max_number [0, max_number).
 * @param max_number maximal number to return (not including)
 * @return Random number
 */
+
 int get_random_number(int max_number)
 {
     return rand() % max_number;
 }
+
+void* my_bsearch(const void* key, const void* base, size_t nmeb, size_t size, cmp_func_t cmp){
+    const char *b = (const char *) base ;
+    size_t start = 0 , end = nmeb, mid = 0 ;
+    int result = 0 ;
+    do {
+        mid = (start+end) /2 ;
+        result = cmp (key, b + mid * size) ;
+        if (result == 0){
+            return ((void *)(b + mid * size)) ;
+        }
+        if (result < 0){
+            end = mid - 1 ;
+        } else {
+            start = mid + 1 ;
+        }
+    }
+    while(start <= end) ;
+    return NULL ;
+}
+
+
+void *my_memcpy (void* dest, const void *src, size_t size) {
+    char *d = (char *)dest ;
+    const char *s = (const char*) src ;
+    for (int i = 0 ; i < size ; ++i) {
+        d[i] = s [i] ;
+    }
+    return dest ;
+}
+
+int int_cmp(const void *a, const void *b){
+    const int * pa = (const int*) a ;
+    const int * pb = (const int*) a ;
+    return *pa - *pb ;
+
+}
+
+int string_cmp(const void *a, const void *b){
+    const string * pa = (const string *) a ;
+    const string * pb = (const string *) a ;
+    return strcmp(*pa, *pb);
+
+}
+
+
 /**
  * Get one random state from the given markov_chain's database.
  * @param markov_chain
  * @return
 */
-
 MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     if(markov_chain->database->first == NULL){
         fprintf(stderr, BAD_CHAIN);
@@ -85,7 +135,8 @@ void generate_random_sequence(MarkovChain *markov_chain,
     for (int i = 0 ; i<max_length; i ++) {
         printf("Tweet %d: ",i+1) ;
         first_node = get_first_random_node(markov_chain) ;
-        printf("%s ",first_node->data) ;
+        markov_chain->print_func()
+        print_func (first_node->data) ;
         int j = 1 ;
         while (first_node->data[strlen(first_node->data)-1] != '.' &&
                                                         j < MAX_TWEET_LEN) {
@@ -244,7 +295,7 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
         fprintf(stderr, ALLOCATION_ERROR_MASSAGE) ;
         return NULL ;
     }
-    memcpy(markov_node->data , data_ptr, strlen(data_ptr)+1);
+    my_memcpy(markov_node->data , data_ptr, strlen(data_ptr)+1);
     markov_node->counter_list = NULL;
     markov_node->counter_list_size = 0;
     add(markov_chain->database, markov_node);

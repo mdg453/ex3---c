@@ -5,9 +5,14 @@
 #include <stdio.h>  // For printf(), sscanf()
 #include <stdlib.h> // For exit(), malloc()
 #include <stdbool.h> // for bool
+#include <errno.h>
 
 #define ALLOCATION_ERROR_MASSAGE "Allocation failure: Failed to allocate new memory\n"
-
+typedef void(*print_func)(const void *) ;
+typedef int(*comp_func) (const void*, const void *) ;
+typedef void (*free_data)(void *) ;
+typedef void * (*copy_func)(const void *) ;
+typedef bool (*is_last)(const void *) ;
 
 
 /**
@@ -17,6 +22,11 @@ struct MarkovNode;
 
 typedef struct MarkovChain {
     LinkedList *database;//list with all the unique words in the text
+    print_func  print_func ;
+    comp_func comp_func;
+    free_data free_data ;
+    copy_func copy_func;
+    is_last is_last ;
 } MarkovChain;
 
 typedef struct NextNodeCounter {
@@ -26,7 +36,7 @@ typedef struct NextNodeCounter {
 } NextNodeCounter;
 
 typedef struct MarkovNode {
-    char *data; //pointer to word
+    void *data; //pointer to word
     NextNodeCounter *counter_list;//point to all possible next words
     int counter_list_size ;
 } MarkovNode;

@@ -9,10 +9,40 @@
 #define FILE_FAIL "Error:The given file is invalid.\n"
 #define NUM_OF_CHARS  100000000
 #define NUM1000 1000
+//int *p = void* bsearch(&to_find, const void pinter, count, sizeofint, *(int compare(void, void))
+//if p == NULL return Exit
+//printf("%d", *p)
+//qsort(arr, nmemb, sizeof(char*),cmp)
+#define LAST_INDX(s) (strlen(s) - 1)
 
+
+void print_fun(const void * to_print) {
+    const char *s = to_print ;
+    printf("%s",s) ;
+}
+
+int comp_fun (const void* a , const void * b) {
+    const char* a1 = a ;
+    const char* b1 = b ;
+    return(strcmp(a,b)) ;
+ }
+
+void free_data_fun (void * dp) {
+    free_markov_chain(dp) ;
+}
+
+void* copy_fun (void * cp){
+    char * str_to_cp =(char *) cp ;
+    char * coppied_str = malloc(strlen(str_to_cp)) ;
+    return  strcpy(coppied_str, str_to_cp) ;
+}
+bool is_last_func(void* last){
+    char * last_str = (char *) (last) ;
+    return strcmp((char *) (last_str + LAST_INDX(last_str)) , ".") == 0 ;
+}
 
 int fill_database (FILE *fp, int words_to_read, MarkovChain *markov_chain){
-    char  text[NUM1000];
+    char text[NUM1000 + 1];
     LinkedList *linkedlist = malloc(sizeof(LinkedList)) ;
     if(linkedlist == NULL){
         fprintf(stderr,ALLOCATION_ERROR_MASSAGE) ;
@@ -51,6 +81,8 @@ int main(int argc ,char* argv[]){
     }
     char* input_path = argv[3] ;
     MarkovChain * base_root = calloc(1, sizeof (MarkovChain));
+    // todo - cheeck
+    //base_root->print_func = print_fun ;
     FILE* in = fopen ( input_path, "r") ;
     if (in == NULL) {
         fprintf(stderr,FILE_FAIL ) ;
