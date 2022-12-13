@@ -2,7 +2,7 @@
 #include "linked_list.h"
 #include <string.h>
 #define NUMS "not enough words for sentence"
-#define MAX_TWEET_LEN 20
+
 typedef int(*cmp_func_t)(const void *, const void *);
 typedef char* string ;
 
@@ -78,7 +78,7 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain){
     for (int i = 0 ; i < ran_num  ; ++i) {
         rand_node = rand_node->next ;
     }
-    while(rand_node->data->data[strlen(rand_node->data->data)-1] == '.'){
+    while(markov_chain->is_last(rand_node->data->data)){
         ran_num = get_random_number(markov_chain->database->size) ;
         rand_node = markov_chain->database->first ;
         for (int i = 0 ; i < ran_num  ; ++i) {
@@ -132,25 +132,23 @@ void generate_random_sequence(MarkovChain *markov_chain,
         fprintf(stderr, NUMS) ;
         return;
     }
-    for (int i = 0 ; i<max_length; i ++) {
-        printf("Tweet %d: ",i+1) ;
-        first_node = get_first_random_node(markov_chain) ;
-        markov_chain->print_func()
-        print_func (first_node->data) ;
-        int j = 1 ;
-        while (first_node->data[strlen(first_node->data)-1] != '.' &&
-                                                        j < MAX_TWEET_LEN) {
-            first_node = get_next_random_node(first_node);
-            if (first_node->data[strlen(first_node->data)-1] == '.'){
-                printf("%s",first_node->data) ;
-            }
-            else {
-                printf("%s ", first_node->data);
-            }
-            j++ ;
+    first_node = get_first_random_node(markov_chain) ;
+    markov_chain->print_func(first_node->data) ;
+    int j = 1 ;
+    while (!markov_chain->is_last(first_node->data) &&
+                                                 j < max_length) {
+        first_node = get_next_random_node(first_node);
+        if (!markov_chain->is_last(first_node->data)){
+            markov_chain->print_func(first_node->data) ;
+            printf(" ") ;
         }
+        else {
+            markov_chain->print_func(first_node->data) ;
+        }
+        j++ ;
+        }
+
         printf("\n") ;
-    }
 }
 
 /**
@@ -195,12 +193,13 @@ void free_markov_chain(MarkovChain ** ptr_chain){
  * @return success/failure: true if the process was successful, false if in
  * case of allocation error.
  */
-bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
+bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode
+*second_node, MarkovChain *markov_chain){
     if (first_node == NULL || second_node == NULL)
     {
         return false;
     }
-    if(first_node->data[strlen(first_node->data)-1] == '.') {
+    if(markov_chain->is_last(first_node->data)) {
         return EXIT_SUCCESS ;
     }
     if (first_node->counter_list_size == 0)
@@ -247,7 +246,7 @@ bool add_node_to_counter_list(MarkovNode *first_node, MarkovNode *second_node){
  * @return Pointer to the Node wrapping given state, NULL if state not in
  * database.
  */
-Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
+Node* get_node_from_database(MarkovChain *markov_chain, void *data_ptr){
     if(markov_chain == NULL){
         fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
         return NULL ;
@@ -271,7 +270,7 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr){
  * returns NULL in case of memory allocation failure.
  */
 
-Node* add_to_database(MarkovChain *markov_chain, char *data_ptr){
+Node* add_to_database(MarkovChain *markov_chain, void *data_ptr){
     if(markov_chain == NULL){
         fprintf(stderr,"NO DATA IN MARKOV CHAIN") ;
         return NULL ;
